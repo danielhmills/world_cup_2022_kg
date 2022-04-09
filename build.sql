@@ -5,6 +5,25 @@ SPARQL CLEAR GRAPH <urn:wc:2022:data>;
 --Load Data
 SPARQL LOAD <https://raw.githubusercontent.com/danielhmills/world_cup_2022_kg/master/data/world_cup_data.ttl> INTO <urn:wc:2022:data>;
 
+-- Test Query w/ Raw TTL
+SPARQL
+PREFIX : <https://raw.githubusercontent.com/danielhmills/world_cup_2022_kg/master/data/world_cup_data.ttl#>
+SELECT *
+FROM <urn:wc:2022:data>
+WHERE 
+    {
+        :this1 :Results ?match.
+        ?match 
+        :IdMatch ?matchID.
+        OPTIONAL{?match :GroupName/:Description ?groupName}.
+        OPTIONAL{?match :StageName/:Description ?stageName}.
+        OPTIONAL{?match :Home/:TeamName/:Description ?homeTeam}.
+        OPTIONAL{?match :Away/:TeamName/:Description ?awayTeam}.
+        BIND(bif:sprintf('%s: %s vs %s',IF(?groupName, ?groupName, ?stageName),IF(?homeTeam,?homeTeam,'Pending'),IF(?awayTeam,?awayTeam,"Pending") ) as ?title)
+        BIND(URI(bif:sprintf('http://demo.openlinksw.com/fifa/wc2022/%s#match',?matchID)) as ?matchURI).
+
+    };
+
 --Forward Chaining
 --Season
 SPARQL
@@ -301,7 +320,7 @@ WHERE
         BIND(URI(bif:sprintf('http://demo.openlinksw.com/fifa/wc2022/%s#country',?countryID)) as ?countryURI).
     };
 
---Test Query: Teams
+--Test Query: Matches and Stadiums
 
 SPARQL
 PREFIX fifa: <http://www.openlinksw.com/ontology/fifa#>
