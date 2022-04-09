@@ -300,3 +300,21 @@ WHERE
         BIND(URI(bif:sprintf('http://demo.openlinksw.com/fifa/wc2022/%s#association',?associationID)) as ?associationURI).
         BIND(URI(bif:sprintf('http://demo.openlinksw.com/fifa/wc2022/%s#country',?countryID)) as ?countryURI).
     };
+
+--Test Query: Teams
+
+SPARQL
+PREFIX fifa: <http://www.openlinksw.com/ontology/fifa#>
+
+SELECT *
+FROM <urn:wc:2022:kg>
+WHERE
+{
+    ?match a fifa:Match;
+    rdfs:label ?matchName;
+    fifa:hasStadium ?stadium. 
+
+    ?stadium rdfs:label ?stadiumName;
+    fifa:hasCity ?stadiumCity;
+    fifa:hasCountry ?stadiumCountry.
+};
